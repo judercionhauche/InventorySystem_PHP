@@ -150,5 +150,13 @@ function randString($length = 5)
   return $str;
 }
 
+function find_by_username($username) {
+  global $db;
+  $sql = "SELECT * FROM users WHERE username = '{$username}' LIMIT 1";
+  $result = $db->query($sql);
+  return $db->fetch_assoc($result);
+}
+
+
 
 ?>

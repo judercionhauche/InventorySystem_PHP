@@ -8,69 +8,84 @@ $groups = find_all('user_groups');
 ?>
 
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once('includes/load.php');
+
+// Retrieving all user groups from the database
+$groups = find_all('user_groups');
+
+// Function to check if username already exists
+
+
 // Checking if form is submitted to add a new user
 if (isset($_POST['add_user'])) {
+    // Required fields for adding a user
+    $req_fields = array('first-name', 'last-name', 'username', 'password', 'level');
+    // Validating required fields
+    validate_fields($req_fields);
 
-  // Required fields for adding a user
-  $req_fields = array('first-name','last-name', 'username', 'password', 'level');
-  // Validating required fields
-  validate_fields($req_fields);
-
-  // Validating first name
-  if (isset($_POST['first-name']) && ctype_digit($_POST['first-name'])) {
-    $errors[] = "First name cannot consist solely of digits.";
-  }
-
-  // Validating last name
-  if (isset($_POST['last-name']) && ctype_digit($_POST['last-name'])) {
-    $errors[] = "Last name cannot consist solely of digits.";
-  }
-
-
-  // Validating username
-  if (!preg_match('/^\D.*$/', $_POST['username'])) {
-    $errors[] = "Username cannot be only digits.";
-  }
-
-  // Validating password using regex
-  if (!preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/', $_POST['password'])) {
-    $errors[] = "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.";
-  }
-
-  // If there are no validation errors
-  if (empty($errors)) {
-    // Escaping and sanitizing input data
-    $first_name   = remove_junk($db->escape($_POST['first-name']));
-    $last_name = remove_junk($db->escape($_POST['last-name']));
-    $username   = remove_junk($db->escape($_POST['username']));
-    $password   = remove_junk($db->escape($_POST['password']));
-    $user_level = (int)$db->escape($_POST['level']);
-    // Hashing the password
-    $password = sha1($password);
-    // Constructing SQL query to add user
-    $query = "INSERT INTO users (";
-    $query .= "first_name,last_name,username,password,user_level,status";
-    $query .= ") VALUES (";
-    $query .= " '{$first_name}','{$last_name}', '{$username}', '{$password}', '{$user_level}','1'";
-    $query .= ")";
-    // Executing the query
-    if ($db->query($query)) {
-      // Success message
-      $session->msg('s', "User account has been created! ");
-      // Redirecting to login page
-      redirect('login_v2.php', false);
-    } else {
-      // Failure message
-      $session->msg('d', ' Sorry failed to create account!');
-      // Redirecting back to add user page
-      redirect('add_user.php', false);
+    // Validating first name
+    if (isset($_POST['first-name']) && ctype_digit($_POST['first-name'])) {
+        $errors[] = "First name cannot consist solely of digits.";
     }
-  } else {
-    // If there are validation errors, display error message
-    $session->msg("d", $errors);
-    // Redirecting back to add user page
-    redirect('add_user.php', false);
-  }
+
+    // Validating last name
+    if (isset($_POST['last-name']) && ctype_digit($_POST['last-name'])) {
+        $errors[] = "Last name cannot consist solely of digits.";
+    }
+
+    // Validating username
+    if (!preg_match('/^\D.*$/', $_POST['username'])) {
+        $errors[] = "Username cannot be only digits.";
+    }
+
+    // Validating password using regex
+    if (!preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/', $_POST['password'])) {
+        $errors[] = "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.";
+    }
+
+    // Checking if username already exists
+    $username = remove_junk($db->escape($_POST['username']));
+    $existing_user = find_by_username($username);
+    if ($existing_user) {
+        $errors[] = "Username already exists.";
+    }
+
+    // If there are no validation errors
+    if (empty($errors)) {
+        // Escaping and sanitizing input data
+        $first_name = remove_junk($db->escape($_POST['first-name']));
+        $last_name = remove_junk($db->escape($_POST['last-name']));
+        $username = remove_junk($username); // Already sanitized
+        $password = remove_junk($db->escape($_POST['password']));
+        $user_level = (int)$db->escape($_POST['level']);
+        // Hashing the password
+        $password = sha1($password);
+        // Constructing SQL query to add user
+        $query = "INSERT INTO users (";
+        $query .= "first_name,last_name,username,password,user_level,status";
+        $query .= ") VALUES (";
+        $query .= " '{$first_name}','{$last_name}', '{$username}', '{$password}', '{$user_level}','1'";
+        $query .= ")";
+        // Executing the query
+        if ($db->query($query)) {
+            // Success message
+            $session->msg('s', "User account has been created! ");
+            // Redirecting to login page
+            redirect('login_v2.php', false);
+        } else {
+            // Failure message
+            $session->msg('d', ' Sorry failed to create account!');
+            // Redirecting back to add user page
+            redirect('add_user.php', false);
+        }
+    } else {
+        // If there are validation errors, display error message
+        $session->msg("d", $errors);
+        // Redirecting back to add user page
+        redirect('add_user.php', false);
+    }
 }
 ?>
 <?php include_once('layouts/header.php'); ?>
