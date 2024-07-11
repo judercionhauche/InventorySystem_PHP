@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
   ob_start();
   require_once('includes/load.php');
   if($session->isUserLoggedIn(true)) { redirect('home.php', false);}
@@ -13,7 +15,7 @@
       <form method="post" action="auth_v2.php" class="clearfix">
         <div class="form-group">
               <label for="username" class="control-label">Username</label>
-              <input type="name" class="form-control" name="username" placeholder="Username">
+              <input type="text" class="form-control" name="username" placeholder="Username" value="<?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : ''; ?>">
         </div>
         <div class="form-group">
             <label for="Password" class="control-label">Password</label>

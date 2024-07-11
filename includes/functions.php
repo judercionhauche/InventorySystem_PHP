@@ -20,11 +20,11 @@ function remove_junk($string) {
   if(is_array($string)) {
       $cleaned_strings = array();
       foreach($string as $str) {
-          $cleaned_strings[] = trim($str); // You may want to adjust this based on your specific needs
+          $cleaned_strings[] = trim($str); 
       }
       return $cleaned_strings;
   } else {
-      return trim($string); // You may want to adjust this based on your specific needs
+      return trim($string); 
   }
 }
 
@@ -54,7 +54,18 @@ function validate_fields($var){
     }
   }
 }
+  /*--------------------------------------------------------------*/
+  /* Function to update the last log in of a user
+  /*--------------------------------------------------------------*/
 
+ function updateLastLogIn($user_id)
+	{
+		global $db;
+    $date = make_date();
+    $sql = "UPDATE users SET last_login='{$date}' WHERE id ='{$user_id}' LIMIT 1";
+    $result = $db->query($sql);
+    return ($result && $db->affected_rows() === 1 ? true : false);
+	}
 /*--------------------------------------------------------------*/
 /* Function for Display Session Message
    Ex echo displayt_msg($message);
@@ -87,7 +98,22 @@ function display_msg($msg = array()) {
     return ""; // Return an empty string if $msg is empty
   }
 }
-
+//Function  to authenticate user
+function authenticate($username='', $password='') {
+  global $db;
+  $username = $db->escape($username);
+  $password = $db->escape($password);
+  $sql  = sprintf("SELECT id,username,password,user_level FROM users WHERE username ='%s' LIMIT 1", $username);
+  $result = $db->query($sql);
+  if($db->num_rows($result)){
+    $user = $db->fetch_assoc($result);
+    $password_request = sha1($password);
+    if($password_request === $user['password'] ){
+      return $user['id'];
+    }
+  }
+ return false;
+}
 
 
 /*--------------------------------------------------------------*/
@@ -127,9 +153,10 @@ function read_date($str){
 /*--------------------------------------------------------------*/
 /* Function for  Readable Make date time
 /*--------------------------------------------------------------*/
-function make_date(){
-  return strftime("%Y-%m-%d %H:%M:%S", time());
+function make_date() {
+  return date("Y-m-d H:i:s");
 }
+
 /*--------------------------------------------------------------*/
 /* Function for  Readable date time
 /*--------------------------------------------------------------*/
@@ -157,6 +184,27 @@ function find_by_username($username) {
   return $db->fetch_assoc($result);
 }
 
+// functions.php
+
+// Your existing functions
+
+function get_product_by_barcode($barcode) {
+  $url = "https://www.brocade.io/api/items/" . $barcode;
+  $ch = curl_init($url);
+
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+
+  if ($response === false) {
+      return null;
+  }
+
+  return json_decode($response, true);
+}
+
 
 
 ?>
+
+

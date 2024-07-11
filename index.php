@@ -9,9 +9,9 @@ ini_set('display_errors', 1);
 <div class="login-page">
     <div class="text-center">
        <h1>Login Panel</h1>
-       <h4>Inventory Management System</h4>
+       <h4>Meditrack Management System</h4>
      </div>
-     <?php echo display_msg($msg); ?>
+      <?php echo display_msg($msg); ?> 
       <form method="post" action="auth.php" class="clearfix">
         <div class="form-group">
               <label for="username" class="control-label">Username</label>
@@ -26,4 +26,3 @@ ini_set('display_errors', 1);
         </div>
     </form>
 </div>
-<?php include_once('layouts/footer.php'); ?>

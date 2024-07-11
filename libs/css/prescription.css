@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+        background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('../images/Medi22.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 0; /* Square corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 1550px;
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+.form-section h2 {
+    margin-bottom: 10px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    flex: 1; /* Equal width columns */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.input-field {
+    width: calc(100% - 20px); /* Adjusted width to account for padding */
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 0; /* Square corners */
+    box-sizing: border-box;
+}
+
+.input-field textarea {
+    width: calc(100% - 20px); /* Adjusted width to account for padding */
+}
+
+.label {
+    font-weight: bold;
+}
+
+button[type="submit"] {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 0; /* Square corners */
+}
+
+button[type="submit"]:hover {
+    opacity: 0.8;
+}

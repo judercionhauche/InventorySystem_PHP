@@ -5,18 +5,8 @@ require_once('includes/load.php');
 
 // Retrieving all user groups from the database
 $groups = find_all('user_groups');
-?>
 
-<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once('includes/load.php');
-
-// Retrieving all user groups from the database
-$groups = find_all('user_groups');
-
-// Function to check if username already exists
-
+$errors = []; // Initialize the errors array
 
 // Checking if form is submitted to add a new user
 if (isset($_POST['add_user'])) {
@@ -73,21 +63,18 @@ if (isset($_POST['add_user'])) {
             // Success message
             $session->msg('s', "User account has been created! ");
             // Redirecting to login page
-            redirect('login_v2.php', false);
+            redirect('index.php', false);
         } else {
             // Failure message
             $session->msg('d', ' Sorry failed to create account!');
-            // Redirecting back to add user page
-            redirect('add_user.php', false);
         }
     } else {
         // If there are validation errors, display error message
         $session->msg("d", $errors);
-        // Redirecting back to add user page
-        redirect('add_user.php', false);
     }
 }
 ?>
+
 <?php include_once('layouts/header.php'); ?>
 <?php echo display_msg($msg); ?>
 <div class="row">
@@ -103,7 +90,7 @@ if (isset($_POST['add_user'])) {
         <form method="post" action="add_user.php">
           <div class="form-group">
             <label for="name">First Name</label>
-            <input type="text" class="form-control" name="first-name" placeholder="First Name" value="<?php echo isset($_POST['full-name']) ? htmlspecialchars($_POST['full-name']) : ''; ?>">
+            <input type="text" class="form-control" name="first-name" placeholder="First Name" value="<?php echo isset($_POST['first-name']) ? htmlspecialchars($_POST['first-name']) : ''; ?>">
           </div>
           <div class="form-group">
             <label for="name">Last Name</label>
@@ -121,7 +108,7 @@ if (isset($_POST['add_user'])) {
             <label for="level">User Role</label>
             <select class="form-control" name="level">
               <?php foreach ($groups as $group) : ?>
-                <option value="<?php echo $group['group_level']; ?>"><?php echo ucwords($group['group_name']); ?></option>
+                <option value="<?php echo $group['group_level']; ?>" <?php echo (isset($_POST['level']) && $_POST['level'] == $group['group_level']) ? 'selected' : ''; ?>><?php echo ucwords($group['group_name']); ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -130,10 +117,7 @@ if (isset($_POST['add_user'])) {
           </div>
         </form>
       </div>
-
     </div>
-
   </div>
 </div>
-
-<!-- <?php include_once('layouts/footer.php'); ?> -->
+<?php include_once('layouts/footer.php'); ?>
