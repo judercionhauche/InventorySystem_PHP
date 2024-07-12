@@ -1,3 +1,7 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +14,6 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <form method="POST" action="">
         <div class="form-section">
@@ -70,6 +73,7 @@
         <button type="submit">Prescribe</button>
     </form>
 </div>
+
 
 </body>
 </html>

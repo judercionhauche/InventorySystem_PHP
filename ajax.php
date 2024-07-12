@@ -63,3 +63,15 @@
     echo json_encode($html);
   }
  ?>
+ <!-- <form method="post" action="ajax.php" autocomplete="off" id="sug-form">
+      <div class="form-group">
+        <label for="sug_input">Search for product name:</label>
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary">Find It</button>
+          </span>
+          <input type="text" id="sug_input" class="form-control" name="title" placeholder="Enter product name">
+        </div>
+        <div id="result" class="list-group"></div>
+      </div>
+    </form> -->
