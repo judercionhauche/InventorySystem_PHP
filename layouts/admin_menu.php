@@ -29,7 +29,7 @@
     <ul class="nav submenu">
        <li><a href="#">Manage Inventory</a> </li>
        <li><a href="add_product.php">Add Inventory</a> </li>
-       <li><a href="#">Place Order(To Distributor)</a> </li>
+       <li><a href="add_to_cart.php">Place Order(To Distributor)</a> </li>
 
    </ul>
   </li>

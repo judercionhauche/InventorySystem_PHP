@@ -2,6 +2,15 @@
   $page_title = 'Add to Cart';
   require_once('includes/load.php');
   page_require_level(3);
+;
+
+  // Fetch items and prices from Sales table
+  $items = array();
+  $sql = "SELECT id, item, price, qty FROM Sale";
+  $result = $db->query($sql);
+  while ($row = $result->fetch_assoc()) {
+    $items[] = $row;
+  }
 
   include_once('layouts/header.php');
 ?>
@@ -95,6 +104,8 @@
 </head>
 <body>
   <div class="container">
+  <?php echo display_msg($msg); ?>
+
     <div class="panel panel-default">
       <div class="panel-heading">
         <strong>
@@ -103,15 +114,17 @@
         </strong>
       </div>
       <div class="panel-body">
-        <form method="post" action="add_to_cart_actions.php">
+        <form method="post" action="actions/add_to_cart_actions.php">
           <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="item">Item</label>
-              <select class="form-control" id="item" name="item">
-                <option value="1" data-price="10.00">Example Item 1 - $10.00</option>
-                <option value="2" data-price="15.00">Example Item 2 - $15.00</option>
-                <option value="3" data-price="20.00">Example Item 3 - $20.00</option>
-              </select>
+          <div class="form-group col-md-6">
+            <label for="item">Item</label>
+            <select class="form-control" id="item" name="item">
+                <?php foreach ($items as $item): ?>
+                <option value="<?php echo $item['id']; ?>" data-price="<?php echo $item['price']; ?>">
+                    <?php echo htmlspecialchars($item['item']) . ' - $' . number_format($item['price'], 2); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
             </div>
             <div class="form-group col-md-2">
               <label for="qty">Qty</label>
