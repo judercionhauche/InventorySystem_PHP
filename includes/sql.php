@@ -171,7 +171,7 @@ function tableExists($table){
             redirect('index.php', false);
       //if Group status Deactive
      elseif($login_level['group_status'] === '0'):
-           $session->msg('d','This level user has been band!');
+           $session->msg('d','This level user has been banned!');
            redirect('home.php',false);
       //cheackin log in User level and Require level is Less than or equal to
      elseif($current_user['user_level'] <= (int)$require_level):

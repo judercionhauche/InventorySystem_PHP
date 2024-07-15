@@ -1,18 +1,17 @@
 <?php
-  $page_title = 'Add to Cart';
-  require_once('includes/load.php');
-  page_require_level(3);
-;
+$page_title = 'Add to Cart';
+require_once('includes/load.php');
+page_require_level(3);
+include_once('layouts/header.php');
 
-  // Fetch items and prices from Sales table
-  $items = array();
-  $sql = "SELECT id, item, price, qty FROM Sale";
-  $result = $db->query($sql);
-  while ($row = $result->fetch_assoc()) {
-    $items[] = $row;
-  }
+// Fetch items and prices from Sales table
+$items = array();
+$sql = "SELECT id, item, price, qty FROM Sale";
+$result = $db->query($sql);
+while ($row = $result->fetch_assoc()) {
+  $items[] = $row;
+}
 
-  include_once('layouts/header.php');
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +103,7 @@
 </head>
 <body>
   <div class="container">
-  <?php echo display_msg($msg); ?>
+    <?php echo display_msg($msg); ?>
 
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -114,24 +113,24 @@
         </strong>
       </div>
       <div class="panel-body">
-        <form method="post" action="actions/add_to_cart_actions.php">
+        <form id="cart-form">
           <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="item">Item</label>
-            <select class="form-control" id="item" name="item">
+            <div class="form-group col-md-6">
+              <label for="item">Item</label>
+              <select class="form-control" id="item" name="item">
                 <?php foreach ($items as $item): ?>
                 <option value="<?php echo $item['id']; ?>" data-price="<?php echo $item['price']; ?>">
-                    <?php echo htmlspecialchars($item['item']) . ' - $' . number_format($item['price'], 2); ?>
+                  <?php echo htmlspecialchars($item['item']) . ' - $' . number_format($item['price'], 2); ?>
                 </option>
                 <?php endforeach; ?>
-            </select>
+              </select>
             </div>
             <div class="form-group col-md-2">
               <label for="qty">Qty</label>
               <input type="number" class="form-control" id="qty" name="qty" placeholder="Quantity">
             </div>
             <div class="form-group col-md-2 align-self-end">
-              <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+              <button type="button" class="btn btn-primary btn-block" id="add-to-cart-btn">Add to Cart</button>
             </div>
           </div>
         </form>
@@ -146,20 +145,12 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Example row, this should be generated dynamically -->
-            <tr>
-              <td>Example Item 1</td>
-              <td>$10.00</td>
-              <td>2</td>
-              <td>$20.00</td>
-              <td><i class="fas fa-trash delete-icon"></i></td>
-            </tr>
-            <!-- End of example row -->
+          <tbody id="cart-body">
+            <!-- Append Cart Items dynamically -->
           </tbody>
         </table>
         <div class="cart-summary">
-          <h4>Subtotal: $20.00</h4>
+          <h4>Subtotal: $<span id="subtotal">0.00</span></h4>
           <button class="btn btn-primary">Proceed To Checkout</button>
         </div>
       </div>
@@ -167,22 +158,92 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const itemSelect = document.getElementById('item');
-      const qtyInput = document.getElementById('qty');
+  const cart = [];
+  const itemSelect = document.getElementById('item');
+  const qtyInput = document.getElementById('qty');
+  const addToCartBtn = document.getElementById('add-to-cart-btn');
+  const cartBody = document.getElementById('cart-body');
+  const subtotalEl = document.getElementById('subtotal');
+  const messageEl = document.getElementById('message');
 
-      itemSelect.addEventListener('change', updatePrice);
-      qtyInput.addEventListener('input', updatePrice);
+  addToCartBtn.addEventListener('click', function() {
+    const selectedItem = itemSelect.options[itemSelect.selectedIndex];
+    const itemId = selectedItem.value;
+    const itemName = selectedItem.text.split(' - ')[0];
+    const price = parseFloat(selectedItem.dataset.price) || 0;
+    const qty = parseInt(qtyInput.value) || 0;
 
-      function updatePrice() {
-        const selectedItem = itemSelect.options[itemSelect.selectedIndex];
-        const price = parseFloat(selectedItem.dataset.price) || 0;
-        const qty = parseInt(qtyInput.value) || 0;
-        const total = price * qty;
-        document.getElementById('total').innerText = '$' + total.toFixed(2);
+    if (qty > 0) {
+      // AJAX request to add/update item in cart in database
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'actions/add_to_cart_actions.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            const existingItemIndex = cart.findIndex(item => item.id === itemId);
+            if (existingItemIndex > -1) {
+              cart[existingItemIndex].qty += qty;
+            } else {
+              cart.push({ id: itemId, name: itemName, price: price, qty: qty });
+            }
+            updateCartTable();
+            messageEl.innerHTML = '<div class="alert alert-success">Item added to cart successfully.</div>';
+          } else {
+            messageEl.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
+          }
+        }
+      };
+      xhr.send(`item=${itemId}&qty=${qty}`);
+    }
+  });
+
+  window.removeFromCart = function(itemId) {
+    // AJAX request to remove item from cart in database
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'actions/delete_cart_actions.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        if (response.success) {
+          const itemIndex = cart.findIndex(item => item.id === itemId);
+          if (itemIndex > -1) {
+            cart.splice(itemIndex, 1);
+            updateCartTable();
+          }
+        } else {
+          messageEl.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
+        }
       }
+    };
+    xhr.send(`item=${itemId}`);
+  }
+
+  function updateCartTable() {
+    cartBody.innerHTML = '';
+    let subtotal = 0;
+
+    cart.forEach(item => {
+      const total = item.price * item.qty;
+      subtotal += total;
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>$${item.price.toFixed(2)}</td>
+        <td>${item.qty}</td>
+        <td>$${total.toFixed(2)}</td>
+        <td><i class="fas fa-trash delete-icon" onclick="removeFromCart('${item.id}')"></i></td>
+      `;
+      cartBody.appendChild(row);
     });
+
+    subtotalEl.innerText = subtotal.toFixed(2);
+  }
+});
+
   </script>
 </body>
 </html>
-
 <?php include_once('layouts/footer.php'); ?>

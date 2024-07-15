@@ -4,30 +4,31 @@ ini_set('display_errors', 1);
 require_once('../includes/load.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get user ID from session (assuming it's stored there)
-    $user_id = $_SESSION['user_id']; // Adjust as per your session handling
-
-    // Escape and sanitize input data
-    $sale_id = (int) $db->escape($_POST['item']); // Assuming 'item' is sale_id from Sales table
-    var_dump($sale_id);
+    $user_id = $_SESSION['user_id']; 
+    $sale_id = (int) $db->escape($_POST['item']);
     $qty = (int) $db->escape($_POST['qty']);
+    
+    // Check if item already exists in cart
+    $check_query = "SELECT * FROM Cart WHERE sale_id = '$sale_id' AND user_id = '$user_id'";
+    $check_result = $db->query($check_query);
 
-    // Insert into Cart table
-    $query = "INSERT INTO Cart (sale_id, user_id, qty) VALUES ('$sale_id', '$user_id', '$qty')";
-    $result = $db->query($query);
+    if ($check_result->num_rows > 0) {
+        // Update quantity if item exists
+        $update_query = "UPDATE Cart SET qty = qty + '$qty' WHERE sale_id = '$sale_id' AND user_id = '$user_id'";
+        $result = $db->query($update_query);
+    } else {
+        // Insert new item if it doesn't exist
+        $query = "INSERT INTO Cart (sale_id, user_id, qty) VALUES ('$sale_id', '$user_id', '$qty')";
+        $result = $db->query($query);
+    }
 
     if ($result) {
-        // Success message and redirect
-        $session->msg('s', 'Item added to cart');
-        redirect('../add_to_cart.php', false); // Redirect to appropriate page
+        echo json_encode(['success' => true]);
     } else {
-        // Error message and redirect
-        $session->msg('d', 'Failed to add item to cart');
-        redirect('../add_to_cart.php', false); // Redirect to appropriate page
+        echo json_encode(['success' => false, 'message' => 'Failed to add/update item in cart']);
     }
 } else {
-    // If not a POST request, handle accordingly (optional)
-    $session->msg('d', 'Invalid request method');
-    redirect('../add_to_cart.php', false); // Redirect to appropriate page
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>
+

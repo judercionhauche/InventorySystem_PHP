@@ -1,13 +1,17 @@
+<?php
+$page_title = 'Register Patient';
+require_once('includes/load.php');
+page_require_level(3);
+include_once('layouts/header.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Registration Form</title>
-    <link rel="stylesheet" href="../libs/css/patient-style.css">
-    <style>
-        /* CSS styles remain the same */
-    </style>
+    <link rel="stylesheet" href="libs/css/patient-style.css">
 </head>
 <body>
 
@@ -18,15 +22,15 @@
             <div class="row">
                 <div class="column">
                     <label class="label">Patient Name</label>
-                    <input class="input-field" type="text" name="patientName" required>
+                    <input class="input-field" type="text" name="patientName" placeholder=" First Name" required>
                 </div>
                 <div class="column">
                     <label class="label">Surname</label>
-                    <input class="input-field" type="text" name="surname" required>
+                    <input class="input-field" type="text" name="surname" placeholder="Last Name" required>
                 </div>
                 <div class="column">
                     <label class="label">Date of Birth</label>
-                    <input class="input-field" type="date" name="dateOfBirth" required>
+                    <input class="input-field" type="date" name="dateOfBirth"  required>
                 </div>
                 <div class="column">
                     <label class="label">Gender</label>
@@ -43,26 +47,30 @@
             <div class="row">
                 <div class="column">
                     <label class="label">Weight (kg)</label>
-                    <input class="input-field" type="number" name="weight" id="weight" step="0.01" required>
+                    <input class="input-field" type="number" name="weight" id="weight" step="0.01" placeholder="Weight(cm)" required>
                 </div>
                 <div class="column">
                     <label class="label">Height (cm)</label>
-                    <input class="input-field" type="number" name="height" id="height" step="0.01" required>
+                    <input class="input-field" type="number" name="height" id="height" step="0.01" placeholder="Height" required>
                 </div>
                 <div class="column">
                     <label class="label">Respiratory Rate (/min)</label>
-                    <input class="input-field" type="number" name="respiratoryRate" required>
+                    <input class="input-field" type="number" name="respiratoryRate" placeholder="respiratory rate" required>
                 </div>
                 <div class="column">
                     <label class="label">Blood Sugar</label>
-                    <input class="input-field" type="number" name="bloodSugar" required>
+                    <input class="input-field" type="number" name="bloodSugar" placeholder="Blood Sugar" required>
                 </div>
             </div>
         </div>
         <div class="form-section">
-            <h2>Calculated Values</h2>
-            <label class="label">BMI (kg/m²)</label>
-            <input class="input-field" type="text" name="bmi" id="bmi" readonly>
+            <h2>BMI(kg/m²)</h2>
+            <div class="row">
+                <div class="column">
+                    <label class="label">BMI (kg/m²)</label>
+                    <input class="input-field" type="text" name="bmi" id="bmi" readonly>
+                </div>
+            </div>
         </div>
         <button type="submit">Submit</button>
     </form>
@@ -92,5 +100,6 @@
     heightInput.addEventListener('input', calculateBMI);
 </script>
 
+<?php include_once('layouts/footer.php'); ?>
 </body>
 </html>

@@ -18,8 +18,7 @@
     </a>
     <ul class="nav submenu">
        <li><a href="#">Manage Inventory</a> </li>
-       <li><a href="#">Add Inventory</a> </li>
-        <li><a href="">Prescribe</a> </li>
+       <li><a href="add_product.php">Add Inventory</a> </li>
 
    </ul>
   </li>
@@ -29,9 +28,9 @@
       <span>Patient Management</span>
     </a>
     <ul class="nav submenu">
-       <li><a href="#">Register Patient</a> </li>
+       <li><a href="patient-registration.php">Register Patient</a> </li>
        <li><a href="#">Diagnosis</a> </li>
-        <li><a href="View/prescription.php">Prescribe Patient</a> </li>
+        <li><a href="prescription.php">Prescribe Patient</a> </li>
 
    </ul>
   </li>
