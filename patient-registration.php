@@ -14,9 +14,9 @@ include_once('layouts/header.php');
     <link rel="stylesheet" href="libs/css/patient-style.css">
 </head>
 <body>
-
+<?php echo display_msg($msg); ?>
 <div class="container">
-    <form method="POST" action="">
+    <form method="POST" action="actions/patient_registration_actions.php">
         <div class="form-section">
             <h2>Personal Details</h2>
             <div class="row">
@@ -36,8 +36,10 @@ include_once('layouts/header.php');
                     <label class="label">Gender</label>
                     <select class="input-field" name="gender" required>
                         <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+
                     </select>
                 </div>
             </div>

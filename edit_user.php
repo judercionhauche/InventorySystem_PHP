@@ -1,10 +1,13 @@
 <?php
+
   $page_title = 'Edit User';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-   page_require_level(1);
+  page_require_level(1);
 ?>
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
   $e_user = find_by_id('users',(int)$_GET['id']);
   $groups  = find_all('user_groups');
   if(!$e_user){
@@ -16,23 +19,24 @@
 <?php
 //Update User basic info
   if(isset($_POST['update'])) {
-    $req_fields = array('name','username','level');
+    $req_fields = array('first_name','last_name','username','level');
     validate_fields($req_fields);
     if(empty($errors)){
-             $id = (int)$e_user['id'];
-           $name = remove_junk($db->escape($_POST['name']));
-       $username = remove_junk($db->escape($_POST['username']));
-          $level = (int)$db->escape($_POST['level']);
-       $status   = remove_junk($db->escape($_POST['status']));
-            $sql = "UPDATE users SET name ='{$name}', username ='{$username}',user_level='{$level}',status='{$status}' WHERE id='{$db->escape($id)}'";
-         $result = $db->query($sql);
-          if($result && $db->affected_rows() === 1){
-            $session->msg('s',"Acount Updated ");
-            redirect('edit_user.php?id='.(int)$e_user['id'], false);
-          } else {
-            $session->msg('d',' Sorry failed to updated!');
-            redirect('edit_user.php?id='.(int)$e_user['id'], false);
-          }
+      $id = (int)$e_user['id'];
+      $first_name = remove_junk($db->escape($_POST['first_name']));
+      $last_name = remove_junk($db->escape($_POST['last_name']));
+      $username = remove_junk($db->escape($_POST['username']));
+      $level = (int)$db->escape($_POST['level']);
+      $status = remove_junk($db->escape($_POST['status']));
+      $sql = "UPDATE users SET first_name ='{$first_name}', last_name ='{$last_name}', username ='{$username}', user_level='{$level}', status='{$status}' WHERE id='{$db->escape($id)}'";
+      $result = $db->query($sql);
+      if($result && $db->affected_rows() === 1){
+        $session->msg('s',"Account Updated ");
+        redirect('edit_user.php?id='.(int)$e_user['id'], false);
+      } else {
+        $session->msg('d',' Failed to update user!');
+        redirect('edit_user.php?id='.(int)$e_user['id'], false);
+      }
     } else {
       $session->msg("d", $errors);
       redirect('edit_user.php?id='.(int)$e_user['id'],false);
@@ -45,18 +49,18 @@ if(isset($_POST['update-pass'])) {
   $req_fields = array('password');
   validate_fields($req_fields);
   if(empty($errors)){
-           $id = (int)$e_user['id'];
-     $password = remove_junk($db->escape($_POST['password']));
-     $h_pass   = sha1($password);
-          $sql = "UPDATE users SET password='{$h_pass}' WHERE id='{$db->escape($id)}'";
-       $result = $db->query($sql);
-        if($result && $db->affected_rows() === 1){
-          $session->msg('s',"User password has been updated ");
-          redirect('edit_user.php?id='.(int)$e_user['id'], false);
-        } else {
-          $session->msg('d',' Sorry failed to updated user password!');
-          redirect('edit_user.php?id='.(int)$e_user['id'], false);
-        }
+    $id = (int)$e_user['id'];
+    $password = remove_junk($db->escape($_POST['password']));
+    $h_pass = sha1($password);
+    $sql = "UPDATE users SET password='{$h_pass}' WHERE id='{$db->escape($id)}'";
+    $result = $db->query($sql);
+    if($result && $db->affected_rows() === 1){
+      $session->msg('s',"User password has been updated ");
+      redirect('edit_user.php?id='.(int)$e_user['id'], false);
+    } else {
+      $session->msg('d',' Sorry failed to update user password!');
+      redirect('edit_user.php?id='.(int)$e_user['id'], false);
+    }
   } else {
     $session->msg("d", $errors);
     redirect('edit_user.php?id='.(int)$e_user['id'],false);
@@ -72,14 +76,19 @@ if(isset($_POST['update-pass'])) {
        <div class="panel-heading">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          Update <?php echo remove_junk(ucwords($e_user['name'])); ?> Account
+          Change <?php echo remove_junk(ucwords($e_user['first_name'] . ' ' . $e_user['last_name'])); ?>'s Account
+          <br>Please notify the user after updating their credentials
         </strong>
        </div>
        <div class="panel-body">
           <form method="post" action="edit_user.php?id=<?php echo (int)$e_user['id'];?>" class="clearfix">
             <div class="form-group">
-                  <label for="name" class="control-label">Name</label>
-                  <input type="name" class="form-control" name="name" value="<?php echo remove_junk(ucwords($e_user['name'])); ?>">
+                  <label for="name" class="control-label">First Name</label>
+                  <input type="name" class="form-control" name="first_name" value="<?php echo remove_junk(ucwords($e_user['first_name'])); ?>">
+            </div>
+            <div class="form-group">
+                  <label for="name" class="control-label">Last Name</label>
+                  <input type="name" class="form-control" name="last_name" value="<?php echo remove_junk(ucwords($e_user['last_name'])); ?>">
             </div>
             <div class="form-group">
                   <label for="username" class="control-label">Username</label>
@@ -97,7 +106,7 @@ if(isset($_POST['update-pass'])) {
               <label for="status">Status</label>
                 <select class="form-control" name="status">
                   <option <?php if($e_user['status'] === '1') echo 'selected="selected"';?>value="1">Active</option>
-                  <option <?php if($e_user['status'] === '0') echo 'selected="selected"';?> value="0">Deactive</option>
+                  <option <?php if($e_user['status'] === '0') echo 'selected="selected"';?> value="0">Inactive</option>
                 </select>
             </div>
             <div class="form-group clearfix">
@@ -113,8 +122,8 @@ if(isset($_POST['update-pass'])) {
       <div class="panel-heading">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          Change <?php echo remove_junk(ucwords($e_user['name'])); ?> password
-        </strong>
+          Change <?php echo remove_junk(ucwords($e_user['first_name'] . ' ' . $e_user['last_name'])); ?>'s password
+          </strong>
       </div>
       <div class="panel-body">
         <form action="edit_user.php?id=<?php echo (int)$e_user['id'];?>" method="post" class="clearfix">

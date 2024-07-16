@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
   $page_title = 'All User';
   require_once('includes/load.php');
 ?>
@@ -41,7 +43,7 @@
         <?php foreach($all_users as $a_user): ?>
           <tr>
            <td class="text-center"><?php echo count_id();?></td>
-           <td><?php echo remove_junk(ucwords($a_user['name']))?></td>
+           <td><?php echo remove_junk(ucwords($a_user['first_name'] . ' ' . $a_user['last_name']))?></td>
            <td><?php echo remove_junk(ucwords($a_user['username']))?></td>
            <td class="text-center"><?php echo remove_junk(ucwords($a_user['group_name']))?></td>
            <td class="text-center">
