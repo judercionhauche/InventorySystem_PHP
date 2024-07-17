@@ -62,7 +62,7 @@ if (isset($_POST['add_product'])) {
             <div class="panel-heading">
                 <strong>
                     <span class="glyphicon glyphicon-th"></span>
-                    <span>Add New Product</span>
+                    <span>Add New Mecine to Stock</span>
                 </strong>
             </div>
             <div class="panel-body">

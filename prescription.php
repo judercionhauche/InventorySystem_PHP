@@ -76,6 +76,7 @@ include_once('layouts/header.php');
     </style>
 </head>
 <body>
+<?php echo display_msg($msg); ?>
 <div class="container">
     <form method="POST" action="">
         <div class="form-section">

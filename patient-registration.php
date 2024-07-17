@@ -18,7 +18,7 @@ include_once('layouts/header.php');
 <div class="container">
     <form method="POST" action="actions/patient_registration_actions.php">
         <div class="form-section">
-            <h2>Personal Details</h2>
+            <h2>Patient Details</h2>
             <div class="row">
                 <div class="column">
                     <label class="label">Patient Name</label>
@@ -27,6 +27,10 @@ include_once('layouts/header.php');
                 <div class="column">
                     <label class="label">Surname</label>
                     <input class="input-field" type="text" name="surname" placeholder="Last Name" required>
+                </div>
+                <div class="column">
+                    <label class="label">Email</label>
+                    <input class="input-field" type="text" name="email" placeholder="email" required>
                 </div>
                 <div class="column">
                     <label class="label">Date of Birth</label>

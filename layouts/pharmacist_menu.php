@@ -19,6 +19,8 @@
     <ul class="nav submenu">
        <li><a href="#">Manage Inventory</a> </li>
        <li><a href="add_product.php">Add Inventory</a> </li>
+       <li><a href="add_to_cart.php">Place Order(to Distributor)</a> </li>
+
 
    </ul>
   </li>
@@ -29,7 +31,6 @@
     </a>
     <ul class="nav submenu">
        <li><a href="patient-registration.php">Register Patient</a> </li>
-       <li><a href="#">Diagnosis</a> </li>
         <li><a href="prescription.php">Prescribe Patient</a> </li>
 
    </ul>

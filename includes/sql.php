@@ -249,7 +249,7 @@ function tableExists($table){
  /*--------------------------------------------------------------*/
  /* Function for Find Highest saleing Product
  /*--------------------------------------------------------------*/
- function find_higest_saleing_product($limit){
+ function find_highest_selling_product($limit){
    global $db;
    $sql  = "SELECT p.name, COUNT(s.product_id) AS totalSold, SUM(s.qty) AS totalQty";
    $sql .= " FROM sales s";

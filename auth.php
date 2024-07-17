@@ -17,7 +17,7 @@ if(empty($errors)){
      redirect('home.php',false);
 
   } else {
-    $session->msg("d", "Sorry Username/Password incorrect.");
+    $session->msg("d", "Sorry, Username/Password incorrect.");
     redirect('index.php',false);
   }
 
