@@ -151,7 +151,7 @@ while ($row = $result->fetch_assoc()) {
         </table>
         <div class="cart-summary">
           <h4>Subtotal: $<span id="subtotal">0.00</span></h4>
-          <button class="btn btn-primary">Proceed To Checkout</button>
+          <button onclick="payWithPaystack()" class="btn btn-primary">Proceed To Checkout</button>
         </div>
       </div>
     </div>
@@ -242,8 +242,33 @@ while ($row = $result->fetch_assoc()) {
     subtotalEl.innerText = subtotal.toFixed(2);
   }
 });
-
   </script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+  <!--::footer_part end::-->
+  function payWithPaystack() {
+  const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
+  var handler = PaystackPop.setup({
+    key: 'pk_test_ab49a5d290b88ba99712d41d80b66b14ae01a751', 
+    email:'judercionhauche@gmail.com', // the amount value is multiplied by 100 to convert to the lowest currency unit
+    amount: subtotal, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    currency: 'GHS', 
+    ref: '' + Math.floor(Math.random() * 1000000 + 1),
+    callback: function(response) {
+      //this happens after the payment is completed successfully
+      var reference = response.reference;
+      // window.location.href = "confirmation.php?ref=" + reference;
+      window.location.href = "actions/success.php?ref=" + reference;
+
+      // alert('Payment complete! Reference: ' + reference);
+    },
+    onClose: function() {
+      alert('Transaction was not completed, window closed.');
+    },
+  });
+  handler.openIframe();
+}
+</script>
 </body>
 </html>
 <?php include_once('layouts/footer.php'); ?>
