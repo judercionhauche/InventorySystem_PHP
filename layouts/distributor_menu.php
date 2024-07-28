@@ -12,7 +12,8 @@
        <span>Orders</span>
       </a>
       <ul class="nav submenu">
-         <li><a href="#">Manage Orders</a> </li>
+         <li><a href="distributor_manage.php">Manage Orders</a> </li>
+         <li><a href="distributor_pending.php">Pending Orders</a> </li>
          <li><a href="add_sale.php">Add Sale</a> </li>
      </ul>
   </li>

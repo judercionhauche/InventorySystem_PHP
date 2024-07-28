@@ -68,7 +68,7 @@ body{
   padding: 15px;
 }.panel-box{
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   text-align: center;
   border: none;
 }.panel-value{
@@ -236,6 +236,11 @@ body{
 .sale_report_header{
   padding: 15px 0;
 }
+/* .table{
+  margin-top: 50;
+} */
+
+
 table td h6{
   margin: 0 0 0.2em 0;
 }

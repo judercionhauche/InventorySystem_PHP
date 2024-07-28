@@ -1,10 +1,8 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+require_once('../includes/load.php');
 
-require '../config/connection.php'; 
-require '../Functions/functions.php'; 
-require '../Functions/session.php'; 
 
 if (isset($_GET['ref'])) {
     $reference = $_GET['ref'];
@@ -37,43 +35,51 @@ if (isset($_GET['ref'])) {
         // Verify transaction status
         $response_data = json_decode($response, true);
         if ($response_data['status'] && $response_data['data']['status'] == 'success') {
-            session_start();
-
             // Process form data from the URL
             if (isset($_SESSION['username'])) {
-                $user_name = $_SESSION['user_name'];
+                $user_name = $_SESSION['username'];
                  
-                $booking_date = date("Y-m-d H:i:s");
+                $order_date = date("Y-m-d H:i:s");
                 $invoice_no = mt_rand();
-                $phone = $connection->real_escape_string($_GET['phone']);
-                $title = $connection->real_escape_string($_GET['title']);
-                $fname = $connection->real_escape_string($_GET['fname']);
-                $lname = $connection->real_escape_string($_GET['lname']);
-                $email = $connection->real_escape_string($_GET['email']);
-                $departure_time = $connection->real_escape_string($_GET['departure_time']);
-                $pickup = $connection->real_escape_string($_GET['pickup_location']);
-                $dropoff = $connection->real_escape_string($_GET['dropoff_location']);
-                $seats = $connection->real_escape_string($_GET['number_of_seats']);          
-                $sql = "INSERT INTO booking (user_id, title, fname, lname, email, phone, departure_time, pickup_location, dropoff_location, number_of_seats, invoice_number, created_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $user_id = $_SESSION['user_id'];
+                $status = "Pending";
+                
+                if (isset($_GET['items'])) {
+                    $items = $_GET['items'];
+                    
+                    // Process items
+                    foreach ($items as $item) {
+                        $id = $item['id'];
+                        $price = $item['price'];
+                        $qty = $item['qty'];
+                        // Perform necessary operations with $id, $name, $price, $qty
+                        // echo "ID: $id, Price: $price, Quantity: $qty<br>";
+                        
+                        $sql = "INSERT INTO orders (user_id, sale_id, price, qty, order_date, invoice, status)
+                        VALUES ('$user_id', '$id', '$price', '$qty', '$order_date', '$invoice_no', '$status')";
+                        
+                        $result = $db->query($sql);
                          
-                if ($stmt = $connection->prepare($sql)) {
-                    $stmt->bind_param("issssssssiss", $user_id, $title, $fname, $lname, $email, $phone, $departure_time, $pickup, $dropoff, $seats, $invoice_no, $booking_date);
-                    echo 'good';
-                    if ($stmt->execute()) {
-                      $session->msg("s", "Booking and Payment Successful");
-                        echo "Booking successful.";
-                        header('Location: ../trip-details.php');
-                        exit;
-                    } else {
-                        echo "Error: " . $stmt->error;
+                        if ($result) {
+                            // echo json_encode(['success' => true]);
+                            // continue;
+                            $sql1 = "UPDATE sale SET qty = qty - '$qty' wHERE id = '$id' AND qty > 0";
+                            $result1 = $db->query($sql1);
+                            
+                        } else {
+                            echo json_encode(['success' => false, 'message' => 'Failed to add/update item in cart']);
+                        }
+ 
                     }
-
-                    $stmt->close();
+                    
+                    $session->msg("s", "Order and Payment Successful");
+                    // echo "Order successful.";
+                    header('Location: ../add_to_cart.php');
+                    exit;
                 } else {
-                    echo "Error: " . $conn->error;
+                    echo "No items received.";
                 }
-                $connection->close();
+                
             } else {
                 echo "Invalid request.";
             }

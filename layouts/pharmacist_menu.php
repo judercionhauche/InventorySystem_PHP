@@ -17,7 +17,8 @@
       <span>Inventory</span>
     </a>
     <ul class="nav submenu">
-       <li><a href="#">Manage Inventory</a> </li>
+       <li><a href="pharmacist_manage.php">Manage Inventory</a> </li>
+       <li><a href="pharmacist_pending.php">Pending Orders</a> </li>
        <li><a href="add_product.php">Add Inventory</a> </li>
        <li><a href="add_to_cart.php">Place Order(to Distributor)</a> </li>
 

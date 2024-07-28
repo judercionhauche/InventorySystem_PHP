@@ -3,7 +3,6 @@ $page_title = 'Add to Cart';
 require_once('includes/load.php');
 page_require_level(3);
 include_once('layouts/header.php');
-
 // Fetch items and prices from Sales table
 $items = array();
 $sql = "SELECT id, item, price, qty FROM Sale";
@@ -11,7 +10,6 @@ $result = $db->query($sql);
 while ($row = $result->fetch_assoc()) {
   $items[] = $row;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -113,21 +111,25 @@ while ($row = $result->fetch_assoc()) {
         </strong>
       </div>
       <div class="panel-body">
+        
         <form id="cart-form">
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="item">Item</label>
               <select class="form-control" id="item" name="item">
                 <?php foreach ($items as $item): ?>
-                <option value="<?php echo $item['id']; ?>" data-price="<?php echo $item['price']; ?>">
-                  <?php echo htmlspecialchars($item['item']) . ' - $' . number_format($item['price'], 2); ?>
+                <option value="<?php echo $item['id']; ?>" data-price="<?php echo $item['price']; ?>" data-qty="<?php echo $item['qty']; ?>">
+                  <?php echo htmlspecialchars($item['item']) . ' - ($' . number_format($item['price'], 2) . ')'; ?>
                 </option>
                 <?php endforeach; ?>
               </select>
             </div>
             <div class="form-group col-md-2">
-              <label for="qty">Qty</label>
-              <input type="number" class="form-control" id="qty" name="qty" placeholder="Quantity">
+              <label for="qty">Quanity Available</label>
+              <!-- <input type="number" class="form-control" id="qty" name="qty" placeholder="Quantity"> -->
+                <select class="form-control" id="qty" name="qty">
+                    <!-- Quantity options will be populated by JavaScript -->
+                </select>
             </div>
             <div class="form-group col-md-2 align-self-end">
               <button type="button" class="btn btn-primary btn-block" id="add-to-cart-btn">Add to Cart</button>
@@ -157,6 +159,7 @@ while ($row = $result->fetch_assoc()) {
     </div>
   </div>
   <script>
+    list = [];
     document.addEventListener('DOMContentLoaded', function() {
   const cart = [];
   const itemSelect = document.getElementById('item');
@@ -224,6 +227,7 @@ while ($row = $result->fetch_assoc()) {
   function updateCartTable() {
     cartBody.innerHTML = '';
     let subtotal = 0;
+    list = [];
 
     cart.forEach(item => {
       const total = item.price * item.qty;
@@ -237,37 +241,128 @@ while ($row = $result->fetch_assoc()) {
         <td><i class="fas fa-trash delete-icon" onclick="removeFromCart('${item.id}')"></i></td>
       `;
       cartBody.appendChild(row);
+      
+      let newItem = { id: item.id, price: item.price, qty: item.qty };
+      list.push(newItem);
     });
+    // alert(item.name);
+    
 
     subtotalEl.innerText = subtotal.toFixed(2);
   }
 });
   </script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  
+  <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const itemSelect = document.getElementById("item");
+          const qtySelect = document.getElementById("qty");
+
+          itemSelect.addEventListener("change", updateQtyOptions);
+
+          function updateQtyOptions() {
+              const selectedItem = itemSelect.options[itemSelect.selectedIndex];
+              // alert(itemSelect.selectedIndex);
+              const maxQty = selectedItem.getAttribute("data-qty");
+
+              // Clear the current options
+              qtySelect.innerHTML = "";
+
+              // Populate the quantity select with options based on the max quantity
+              for (let i = 1; i <= maxQty; i++) {
+                  const option = document.createElement("option");
+                  option.value = i;
+                  option.text = i;
+                  qtySelect.appendChild(option);
+              }
+          }
+
+          // Initialize quantity options for the first item
+          updateQtyOptions();
+      });
+  </script>
+    
   <script>
   <!--::footer_part end::-->
+  
+  function serializeItems(items) {
+          return items.map((item, index) => {
+              return `items[${index}][id]=${item.id}&items[${index}][price]=${item.price}&items[${index}][qty]=${item.qty}`;
+          }).join('&');
+      }
+  
+  
   function payWithPaystack() {
-  const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
-  var handler = PaystackPop.setup({
-    key: 'pk_test_ab49a5d290b88ba99712d41d80b66b14ae01a751', 
-    email:'judercionhauche@gmail.com', // the amount value is multiplied by 100 to convert to the lowest currency unit
-    amount: subtotal, // the amount value is multiplied by 100 to convert to the lowest currency unit
-    currency: 'GHS', 
-    ref: '' + Math.floor(Math.random() * 1000000 + 1),
-    callback: function(response) {
-      //this happens after the payment is completed successfully
-      var reference = response.reference;
-      // window.location.href = "confirmation.php?ref=" + reference;
-      window.location.href = "actions/success.php?ref=" + reference;
+        // Get the selected item
+        // const itemSelect = document.getElementById('item');
+        // const selectedItem = itemSelect.options[itemSelect.selectedIndex];
+        // const itemId = selectedItem.value;
+        // const itemPrice = selectedItem.getAttribute('data-price');
+        // const itemQty = document.getElementById('qty').value;
+        
+        // console.log(list);
+        
+        // Get subtotal (assuming it's already calculated and displayed somewhere in the DOM)
+        // const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
+        
+        let totalPrice = 0;
+          list.forEach(item => {
+            totalPrice += item.price * item.qty;
+          });
+        
+        totalPrice = totalPrice * 100; // Convert to the lowest currency unit
+        
+        var handler = PaystackPop.setup({
+            key: 'pk_test_ab49a5d290b88ba99712d41d80b66b14ae01a751', 
+            email: 'judercionhauche@gmail.com',
+            amount: totalPrice,
+            currency: 'GHS', 
+            ref: '' + Math.floor(Math.random() * 1000000 + 1),
+            callback: function(response) {
+                var reference = response.reference;
+                
+                // Append item details to the GET parameters
+                // const itemParams = `item_id=${itemId}&item_price=${itemPrice}&item_qty=${itemQty}`;
+                const itemParams = serializeItems(list);
+                
+                // Redirect with form data and payment reference
+                window.location.href = "actions/success.php?ref=" + reference + "&" + itemParams;
+            },
+            onClose: function() {
+                alert('Transaction was not completed, window closed.');
+            },
+        });
+        handler.openIframe();
+    }
+    // const form = document.getElementById("form");
+    // form.addEventListener("submit", (e) => {
+    //     e.preventDefault();
+    //     payWithPaystack();
+    // });
 
-      // alert('Payment complete! Reference: ' + reference);
-    },
-    onClose: function() {
-      alert('Transaction was not completed, window closed.');
-    },
-  });
-  handler.openIframe();
-}
+//   function payWithPaystack() {
+//   const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
+//   var handler = PaystackPop.setup({
+//     key: 'pk_test_ab49a5d290b88ba99712d41d80b66b14ae01a751', 
+//     email:'judercionhauche@gmail.com', // the amount value is multiplied by 100 to convert to the lowest currency unit
+//     amount: subtotal, // the amount value is multiplied by 100 to convert to the lowest currency unit
+//     currency: 'GHS', 
+//     ref: '' + Math.floor(Math.random() * 1000000 + 1),
+//     callback: function(response) {
+//       //this happens after the payment is completed successfully
+//       var reference = response.reference;
+//       // window.location.href = "confirmation.php?ref=" + reference;
+//       window.location.href = "actions/success.php?ref=" + reference;
+
+//       // alert('Payment complete! Reference: ' + reference);
+//     },
+//     onClose: function() {
+//       alert('Transaction was not completed, window closed.');
+//     },
+//   });
+//   handler.openIframe();
+// }
 </script>
 </body>
 </html>
