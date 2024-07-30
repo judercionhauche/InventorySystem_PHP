@@ -20,6 +20,8 @@ while ($row = $result->fetch_assoc()) {
   <title>Add to Cart</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     body {
       background-color: #f8f9fa;
@@ -294,17 +296,6 @@ while ($row = $result->fetch_assoc()) {
   
   
   function payWithPaystack() {
-        // Get the selected item
-        // const itemSelect = document.getElementById('item');
-        // const selectedItem = itemSelect.options[itemSelect.selectedIndex];
-        // const itemId = selectedItem.value;
-        // const itemPrice = selectedItem.getAttribute('data-price');
-        // const itemQty = document.getElementById('qty').value;
-        
-        // console.log(list);
-        
-        // Get subtotal (assuming it's already calculated and displayed somewhere in the DOM)
-        // const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
         
         let totalPrice = 0;
           list.forEach(item => {
@@ -335,34 +326,7 @@ while ($row = $result->fetch_assoc()) {
         });
         handler.openIframe();
     }
-    // const form = document.getElementById("form");
-    // form.addEventListener("submit", (e) => {
-    //     e.preventDefault();
-    //     payWithPaystack();
-    // });
 
-//   function payWithPaystack() {
-//   const subtotal = parseFloat(document.getElementById('subtotal').innerText) * 100; // Convert to the lowest currency unit
-//   var handler = PaystackPop.setup({
-//     key: 'pk_test_ab49a5d290b88ba99712d41d80b66b14ae01a751', 
-//     email:'judercionhauche@gmail.com', // the amount value is multiplied by 100 to convert to the lowest currency unit
-//     amount: subtotal, // the amount value is multiplied by 100 to convert to the lowest currency unit
-//     currency: 'GHS', 
-//     ref: '' + Math.floor(Math.random() * 1000000 + 1),
-//     callback: function(response) {
-//       //this happens after the payment is completed successfully
-//       var reference = response.reference;
-//       // window.location.href = "confirmation.php?ref=" + reference;
-//       window.location.href = "actions/success.php?ref=" + reference;
-
-//       // alert('Payment complete! Reference: ' + reference);
-//     },
-//     onClose: function() {
-//       alert('Transaction was not completed, window closed.');
-//     },
-//   });
-//   handler.openIframe();
-// }
 </script>
 </body>
 </html>
