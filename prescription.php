@@ -6,6 +6,24 @@ $page_title = 'Prescription Form';
 include_once('layouts/header.php');
 // page_require_level(2);
 
+
+
+$items = array();
+$sql = "SELECT patient_id, patient_name, surname FROM patients";
+$result = $db->query($sql);
+while ($row = $result->fetch_assoc()) {
+  $items[] = $row;
+}
+
+
+
+$items1 = array();
+$sql1 = "SELECT id, item FROM products";
+$result1 = $db->query($sql1);
+while ($row1 = $result1->fetch_assoc()) {
+  $items1[] = $row1;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +68,7 @@ include_once('layouts/header.php');
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: black;
         }
         .input-field {
             width: 100%;
@@ -78,28 +97,29 @@ include_once('layouts/header.php');
 <body>
 <?php echo display_msg($msg); ?>
 <div class="container">
-    <form method="POST" action="">
+    <?php echo display_msg($msg); ?>
+    <form method="POST" action="actions/add_prescription.php">
         <div class="form-section">
             <h2>Prescribe Patient</h2>
             <div class="row">
                 <div class="column">
                     <label class="label">Medicine Name</label>
                     <select class="input-field" name="medicineName" required>
-                        <!-- Options should be dynamically loaded from the database -->
-                        <option value="">Select Medicine</option>
-                        <option value="medicine1">Medicine 1</option>
-                        <option value="medicine2">Medicine 2</option>
-                        <!-- Add more options as needed -->
+                        <?php foreach ($items1 as $item): ?>
+                            <option value="<?php echo $item['id']; ?>">
+                              <?php echo htmlspecialchars($item['item']); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="column">
                     <label class="label">Patient Name</label>
                     <select class="input-field" name="patientName" required>
-                        <!-- Options should be dynamically loaded from the database -->
-                        <option value="">Select Patient</option>
-                        <option value="patient1">Patient 1</option>
-                        <option value="patient2">Patient 2</option>
-                        <!-- Add more options as needed -->
+                        <?php foreach ($items as $ite): ?>
+                            <option value="<?php echo $ite['patient_id']; ?>,<?php echo $ite['patient_name']; ?> <?php echo $ite['surname']; ?>">
+                              <?php echo htmlspecialchars($ite['patient_name']); ?> <?php echo $ite['surname']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="column">

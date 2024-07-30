@@ -27,24 +27,24 @@ if (isset($_POST['get_product'])) {
 
 if (isset($_POST['add_product'])) {
     $date = make_date();
-    $product_quantity =remove_junk($db->escape($_POST['product-quantity'])) ;
+    $product_quantity = remove_junk($db->escape($_POST['product-quantity']));
     $cat = remove_junk($db->escape($_POST['product-category']));
+    $price = remove_junk($db->escape($_POST['price']));
     $product_title = remove_junk($db->escape($_POST['product-title']));
     $brand_name = remove_junk($db->escape($_POST['brand_name']));
     $product_quantity = remove_junk($db->escape($_POST['product-quantity']));
     $barcode = remove_junk($db->escape($_POST['barcode']));
-    $size = remove_junk($db->escape($_POST['size']));
     $query  = "INSERT INTO products (";
-    $query .= "product_name,brand_name,barcode,size,quantity,categorie_id,date";
+    $query .= "item,brand_name,barcode,qty,price,category_id,date";
     $query .= ") VALUES (";
-    $query .= " '{$product_title}','{$brand_name}','{$barcode}', '{$size}','{$product_quantity}','{$cat}', '{$date}'";
+    $query .= " '{$product_title}','{$brand_name}','{$barcode}','{$product_quantity}','{$price}','{$cat}', '{$date}'";
     $query .= ")";
-    $query .= " ON DUPLICATE KEY UPDATE product_name='{$product_title}'";
-    if($db->query($query)){
-        $session->msg('s',"Product added ");
+    $query .= " ON DUPLICATE KEY UPDATE item='{$product_title}'";
+    if ($db->query($query)) {
+        $session->msg('s', "Product added ");
         redirect('add_product.php', false);
     } else {
-        $session->msg('d',' Sorry failed to add product!');
+        $session->msg('d', ' Sorry failed to add product!');
         redirect('product.php', false);
     }
 }
@@ -93,17 +93,18 @@ if (isset($_POST['add_product'])) {
                                         <input type="number" class="form-control" name="product-quantity" placeholder="Product Quantity" value="<?php echo htmlspecialchars($product_quantity); ?>">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="form-group">
                                     <div class="input-group">
-                                        <span class="input-group-addon"></span>
-                                        <input type="text" class="form-control" name="barcode" placeholder="Barcode" value="<?php echo htmlspecialchars($barcode); ?>">
-                                        <span class="input-group-addon"></span>
+                                        <span class="input-group-addon">
+                                            <i class="glyphicon glyphicon-usd"></i>
+                                        </span>
+                                        <input type="number" class="form-control" name="price" placeholder="Price" step="0.01" value="<?php echo htmlspecialchars($price); ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"></span>
-                                        <input type="text" class="form-control" name="size" placeholder="Size" value="<?php echo htmlspecialchars($size); ?>">
+                                        <input type="text" class="form-control" name="barcode" placeholder="Barcode" value="<?php echo htmlspecialchars($barcode); ?>">
                                         <span class="input-group-addon"></span>
                                     </div>
                                 </div>
@@ -115,7 +116,7 @@ if (isset($_POST['add_product'])) {
                                 <div class="col-md-6">
                                     <select class="form-control" name="product-category">
                                         <option value="">Select Product Category</option>
-                                        <?php foreach ($all_categories as $cat): ?>
+                                        <?php foreach ($all_categories as $cat) : ?>
                                             <option value="<?php echo $cat['id'] ?>">
                                                 <?php echo $cat['name'] ?>
                                             </option>

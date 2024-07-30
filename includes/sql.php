@@ -54,19 +54,16 @@ function delete_by_id($table,$id)
 /*--------------------------------------------------------------*/
 /* Function for Count id  By table name
 /*--------------------------------------------------------------*/
-// In includes/load.php or another included file
-function count_by_id($table, $id) {
-  global $db; // Ensure you have a $db connection object available
-  $query = "SELECT COUNT(*) as count FROM {$table} WHERE id = '{$id}'";
-  $result = $db->query($query);
-  if ($result) {
-      $row = $result->fetch_assoc();
-      return $row['count'];
-  } else {
-      return 0;
+
+function count_by_id($table){
+  global $db;
+  if(tableExists($table))
+  {
+    $sql    = "SELECT COUNT(id) AS total FROM ".$db->escape($table);
+    $result = $db->query($sql);
+     return($db->fetch_assoc($result));
   }
 }
-
 /*--------------------------------------------------------------*/
 /* Determine if database table exists
 /*--------------------------------------------------------------*/

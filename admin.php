@@ -132,7 +132,7 @@ function find_total_categories() {
 
 function find_total_products() {
     global $db;
-    $sql = "SELECT COUNT(*) AS total FROM products";
+    $sql = "SELECT COUNT(*) AS total FROM sale";
     $result = $db->query($sql);
     $row = $result->fetch_assoc();
     return $row['total'];
