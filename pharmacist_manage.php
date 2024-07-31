@@ -6,7 +6,6 @@ include_once('layouts/header.php');
 // Fetch items and prices from Sales table
 $items = array();
 $user_id = $_SESSION['user_id'];
-
 $sql = "SELECT 
             p.item,
             p.price,
@@ -19,12 +18,15 @@ $sql = "SELECT
             products p
         JOIN 
             categories c ON p.category_id = c.id
-        WHERE p.pharma_id = '{$user_id}'";
+        WHERE 
+            p.pharma_id = '{$user_id}' OR p.pharma_id IS NULL";
 
 $result = $db->query($sql);
+$items = [];
 while ($row = $result->fetch_assoc()) {
-  $items[] = $row;
+    $items[] = $row;
 }
+
 ?>
 
 <!DOCTYPE html>

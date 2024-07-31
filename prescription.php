@@ -127,8 +127,8 @@ while ($row1 = $result1->fetch_assoc()) {
                     <input class="input-field" type="text" name="dosage" placeholder="Dosage" required>
                 </div>
                 <div class="column">
-                    <label class="label">Number of Days</label>
-                    <input class="input-field" type="number" name="numberOfDays" placeholder="number of days" required>
+                    <label class="label">Quantity</label>
+                    <input class="input-field" type="number" name="qty" placeholder="Quantity" required>
                 </div>
                 <div class="column">
                     <label class="label">Frequency</label>
