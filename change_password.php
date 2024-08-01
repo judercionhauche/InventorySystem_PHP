@@ -27,7 +27,7 @@
                   $session->msg('s',"Login with your new password.");
                   redirect('index.php', false);
                 else:
-                  $session->msg('d',' Sorry failed to updated!');
+                  $session->msg('d',' Sorry failed to update password!');
                   redirect('change_password.php', false);
                 endif;
     } else {
