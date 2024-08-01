@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sale_id = (int) $db->escape($_POST['item']);
 
     // Delete item from cart
-    $query = "DELETE FROM Cart WHERE sale_id = '$sale_id' AND user_id = '$user_id'";
+    $query = "DELETE FROM cart WHERE sale_id = '$sale_id' AND user_id = '$user_id'";
     $result = $db->query($query);
 
     if ($result) {
