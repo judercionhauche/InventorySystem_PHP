@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $instructions = remove_junk($_POST['instructions']);    
     
     $query  = "INSERT INTO prescriptions (";
-    $query .= "date,medicine_id,patient_id,patient_name,dosage,qty,frequency,route,instructions,pharma_id";
+    $query .= "date,medicine_id,patient_id,patient_name,dosage,number_of_days,frequency,route,instructions,pharma_id";
     $query .= ") VALUES (";
     $query .= " '{$date}','{$med}','{$id}','{$patient}', '{$dosage}','{$qty}','{$frequency}','{$route}', '{$instructions}', '{$user_id}'";
     $query .= ")";
