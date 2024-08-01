@@ -22,20 +22,7 @@
 </div>
 
 <div class="row">
-    <a href="users.php" style="color:black;">
-        <div class="col-md-3">
-           <div class="panel panel-box clearfix">
-             <div class="panel-icon pull-left bg-secondary1">
-              <i class="glyphicon glyphicon-user"></i>
-            </div>
-            <div class="panel-value pull-right">
-              <p class="text-muted">Users</p>
-              <p class="text-muted"><?php echo $total_users; ?></p>
-            </div>
-           </div>
-        </div>
-    </a>
-
+    
     <a href="categorie.php" style="color:black;">
         <div class="col-md-3">
            <div class="panel panel-box clearfix">
@@ -85,7 +72,7 @@
        <div class="panel-heading">
          <strong>
            <span class="glyphicon glyphicon-th"></span>
-           <span>Highest Selling by Quantity</span>
+           <span>Product by Quantity</span>
          </strong>
        </div>
        <div class="panel-body">
