@@ -5,7 +5,7 @@ page_require_level(3);
 include_once('layouts/header.php');
 // Fetch items and prices from Sales table
 $items = array();
-$sql = "SELECT id, item, price, qty FROM Sale";
+$sql = "SELECT id, item, price, qty FROM sale";
 $result = $db->query($sql);
 while ($row = $result->fetch_assoc()) {
   $items[] = $row;

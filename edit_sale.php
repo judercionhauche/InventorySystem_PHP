@@ -5,13 +5,13 @@
    page_require_level(3);
 ?>
 <?php
-$sale = find_by_id('Sale',(int)$_GET['id']);
+$sale = find_by_id('sale',(int)$_GET['id']);
 if(!$sale){
   $session->msg("d","Missing product id.");
   redirect('add_.php');
 }
 ?>
-<?php $product = find_by_id('Sale',$sale['product_id']); ?>
+<?php $product = find_by_id('sale',$sale['product_id']); ?>
 <?php
 
   if(isset($_POST['update_sale'])){
@@ -24,7 +24,7 @@ if(!$sale){
           $date      = $db->escape($_POST['date']);
           $s_date    = date("Y-m-d", strtotime($date));
 
-          $sql  = "UPDATE sales SET";
+          $sql  = "UPDATE sale SET";
           $sql .= " product_id= '{$p_id}',qty={$s_qty},price='{$s_total}',date='{$s_date}'";
           $sql .= " WHERE id ='{$sale['id']}'";
           $result = $db->query($sql);

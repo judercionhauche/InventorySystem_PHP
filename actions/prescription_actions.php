@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $respiratoryRate = remove_junk($db->escape($_POST['respiratoryRate']));
     $bloodSugar = remove_junk($db->escape($_POST['bloodSugar']));
     $bmi = remove_junk($db->escape($_POST['bmi']));
-    $query  = "INSERT INTO Patients (";
+    $query  = "INSERT INTO patients (";
     $query .= "patient_name,surname,date_of_birth,gender,weight,height,respiratory_rate,blood_sugar,bmi, Email";
     $query .= ") VALUES (";
     $query .= " '{$patientName}','{$surname}','{$dob}','$gender', '$weight','$height','{$respiratoryRate}','{$bloodSugar}','{$bmi}','{$email}'";
