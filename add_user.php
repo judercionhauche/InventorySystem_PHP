@@ -63,7 +63,7 @@ if (isset($_POST['add_user'])) {
             // Success message
             $session->msg('s', "User account has been created! ");
             // Redirecting to login page
-            redirect('index.php', false);
+            redirect('users.php', false);
         } else {
             // Failure message
             $session->msg('d', ' Sorry failed to create account!');
