@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 require_once('includes/load.php');
 
 // Checkin What level user has permission to view this page
